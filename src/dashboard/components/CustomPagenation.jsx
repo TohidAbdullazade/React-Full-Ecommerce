@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import React from "react";
+import React,{memo} from "react";
 
 const CustomPagenation = ({ totalPost, postPerPage, setCurrentPage }) => {
   const pages = [];
@@ -10,10 +10,14 @@ const CustomPagenation = ({ totalPost, postPerPage, setCurrentPage }) => {
 
   return (
     <>
-      <div>
+      <div className="pagenation-container ">
         {pages.map((page) => {
           return (
-            <Button  key={page} onClick={()=>setCurrentPage(page)}>
+            <Button
+              className="my-2.5"
+              key={page}
+              onClick={() => setCurrentPage(page)}
+            >
               {page}
             </Button>
           );
@@ -23,4 +27,4 @@ const CustomPagenation = ({ totalPost, postPerPage, setCurrentPage }) => {
   );
 };
 
-export default CustomPagenation;
+export default memo(CustomPagenation);

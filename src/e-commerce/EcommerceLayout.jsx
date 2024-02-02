@@ -1,10 +1,10 @@
+//import Header from "../../components/Header";
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-
 const EcommerceLayout = () => {
   return (
-    <div>
+    <div className="eCommerce_Layout_Container ">
       <Outlet />
     </div>
   );

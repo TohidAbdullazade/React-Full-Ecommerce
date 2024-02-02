@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-
 const SlideShow = () => {
   const settings = {
-   
     dots: true,
     infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,
-      autoplay: true,
-    speed: 4000,
-    autoplaySpeed: 4000,
-    cssEase: "ease-in-out",
+    autoplay: true,
+    speed: 1500,
+    autoplaySpeed: 3500,
+    cssEase: "linear",
     pauseOnHover: true,
   };
 
@@ -49,9 +47,8 @@ const SlideShow = () => {
           <div className="main-text_conatiner absolute top-44 flex justify-center w-full">
             <div className="title">
               <span className="text-5xl text-red-800 font-bold capitalize">
-              different varieties for ladies and gents we have it all!
+                different varieties for ladies and gents we have it all!
               </span>
-              
             </div>
           </div>
           <img
@@ -64,7 +61,7 @@ const SlideShow = () => {
           <div className="main-text_conatiner absolute top-44 flex justify-center w-full">
             <div className="title">
               <span className="text-5xl text-orange-500 font-bold capitalize">
-              we have both classic and the latest fashion!
+                we have both classic and the latest fashion!
               </span>
             </div>
           </div>
@@ -79,4 +76,4 @@ const SlideShow = () => {
   );
 };
 
-export default SlideShow;
+export default memo(SlideShow);

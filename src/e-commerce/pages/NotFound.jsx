@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "antd";
-import skyPicture from "../../../../assets/img/skyPicture.jpeg";
+import skyPicture from "../../../src/assets/img/skyPicture.jpeg";
 import Meta from "antd/es/card/Meta";
 import { IoArrowBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";

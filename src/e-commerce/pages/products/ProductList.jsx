@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  GET_ALL_PRODUCTS,
-  GET_ALL_PRODUCTS_FROM_SITE,
-} from "../../../../services/Product";
-import CustomPagenation from "../../../../dashboard/components/CustomPagenation";
-import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
+import { GET_ALL_PRODUCTS_FROM_SITE } from "../../../services/Product";
+import CustomPagenation from "../../../dashboard/components/CustomPagenation";
+import Footer from "../../components/Footer";
 import { Card, List, Space } from "antd";
 import { BiMessageDetail } from "react-icons/bi";
 import { MdAddShoppingCart } from "react-icons/md";
 
-const Products = () => {
+const ProductList = () => {
   const [data, setData] = useState([]);
   // ===> PAGENATION <===
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,7 +14,7 @@ const Products = () => {
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
-  const currentPost = data.slice(firstPostIndex, lastPostIndex);
+  data.slice(firstPostIndex, lastPostIndex);
 
   const getProducts = () => {
     GET_ALL_PRODUCTS_FROM_SITE()
@@ -35,22 +31,24 @@ const Products = () => {
 
   return (
     <>
-      <Header />
-
       <div className="flex gap-5">
         <div className="">
           <List
             className="flex gap-5"
-            grid={{ xs: 1, sm: 2, md: 4 }}
-            dataSource={currentPost}
             renderItem={(items) => {
               return (
                 <Space direction="horizontal">
                   <Card
                     title={items.title}
                     actions={[
-                      <BiMessageDetail className="text-center text-green-400" size={22} />,
-                      <MdAddShoppingCart className="text-center text-red-400" size={22} />,
+                      <BiMessageDetail
+                        className="text-center text-green-400"
+                        size={22}
+                      />,
+                      <MdAddShoppingCart
+                        className="text-center text-red-400"
+                        size={22}
+                      />,
                     ]}
                   >
                     <p>{items.description}</p>
@@ -63,15 +61,15 @@ const Products = () => {
         </div>
       </div>
 
-      <CustomPagenation
+       <CustomPagenation
         totalPost={data.length}
         postPerPage={postPerPage}
         setCurrentPage={setCurrentPage}
-      />
+      /> 
 
       <Footer />
     </>
   );
 };
 
-export default Products;
+export default ProductList;

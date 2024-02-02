@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import payment from "../../assets/img/payment.png";
 import { Typography } from "antd";
 
@@ -72,4 +72,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default memo(Footer);
