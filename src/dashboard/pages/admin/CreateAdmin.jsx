@@ -1,35 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GET_ALL_ADMINS, Register } from "../../../services/auth";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Input, Typography, message } from "antd";
 
+
 const CreateAdmin = () => {
+  
+
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
     surname: "",
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
 
-  
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = () => {
-    GET_ALL_ADMINS().then(({ data }) => {
-      if (data[0].role === "admin") {
-        message.error("This Operation is only valid for superAdmin", 1.5);
-        return;
-      } else {
-        Register(user).then(({ data }) => {
-          setUser(data);
-          localStorage.setItem("adminRole", data.user.role);
-          console.log(data);
-          navigate("/admin/members"); // NAVIGATE
-        });
-      }
+    Register(user).then(({ data }) => {
+      setUser(data);
+      localStorage.setItem("adminRole", data.user.role);
+      console.log(data);
+      navigate("/admin/members"); // NAVIGATE
     });
   };
 

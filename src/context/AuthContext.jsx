@@ -6,10 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [isAdminLoggedIn, setAdminLoggedIn] = useState(false);
   const [isSuperAdminLoggedIn, setSuperAdminLoggedIn] = useState(false);
 
-  const roles = {
-    ADMIN: "ADMIN",
-    SUPER_ADMIN: "SUPERADMIN",
-  };
+ 
 
   return (
     <AuthContext.Provider
@@ -18,7 +15,7 @@ export const AuthProvider = ({ children }) => {
         setAdminLoggedIn,
         isSuperAdminLoggedIn,
         setSuperAdminLoggedIn,
-        roles
+       
       }}
     >
       {children}

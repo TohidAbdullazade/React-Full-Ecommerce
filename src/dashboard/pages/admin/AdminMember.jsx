@@ -25,21 +25,14 @@ const AdminMember = () => {
       title: `Are you Sure To Delete ${name} ?`,
 
       onOk: () => {
-        GET_ALL_ADMINS().then(({ data }) => {
-          if (data[0].role === "admin") {
-            message.error("This Operation is only valid for superAdmin", 1.5);
-            return;
-          } else {
-            deleteAdmin(id)
-              .then(() => {
-                get_ADMINS();
-                return message.info("Was Deleted Succesfly");
-              })
-              .catch((err) => {
-                console.log(err.message);
-              });
-          }
-        });
+        deleteAdmin(id)
+          .then(() => {
+            get_ADMINS();
+            return message.info("Was Deleted Succesfly");
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
       },
       onCancel: () => {
         return message.info("The Operation was canceled !");
