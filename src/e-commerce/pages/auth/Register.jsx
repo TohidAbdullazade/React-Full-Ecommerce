@@ -22,7 +22,7 @@ const Register = () => {
     CREATE_CLIENT(client).then(({ data }) => {
       setClient(data);
       setClient({ name: "", surname: "", email: "", password: "" });
-      navigate("/");
+      navigate("/basket");
 
       localStorage.setItem("clientToken", data.token);
     });

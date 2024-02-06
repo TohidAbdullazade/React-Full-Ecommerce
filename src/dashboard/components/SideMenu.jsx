@@ -23,7 +23,7 @@ const SideMenu = () => {
             {
               label: "Dashboard",
               title: "Dashboard",
-              key: "home",
+              key: "/admin",
               icon: <RxDashboard color="gray" size={17} />,
             },
             {

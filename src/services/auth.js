@@ -6,12 +6,12 @@ export const Login = async (userData) => {
   return res.data;
 };
 
-// ===> Get SuperAdmin  Profile in Dashboard <===
+// ===> Get LOGGED USER in Dashboard <===
 export const getProfile = async () => {
   let res = await API.get("profile");
   return res.data;
 };
-// ===> Register as Admin in Dashboard <===
+// ===> Create a Admin in Dashboard <===
 export const Register = async (registerDatas) => {
   let res = await API.post("dashboard/register", registerDatas);
   console.log(res.data);

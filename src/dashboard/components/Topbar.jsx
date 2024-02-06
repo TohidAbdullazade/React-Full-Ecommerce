@@ -59,9 +59,11 @@ const Topbar = () => {
                 </Popover>
               </li>
               <li>
-                <Popover content="Log Out" trigger={"hover"}>
-                  <CiLogout size={22} fill="black" />
-                </Popover>
+                <Link to={"/login"}>
+                  <Popover content="Log Out" trigger={"hover"}>
+                    <CiLogout size={22} fill="black" />
+                  </Popover>
+                </Link>
               </li>
             </ul>
           </div>

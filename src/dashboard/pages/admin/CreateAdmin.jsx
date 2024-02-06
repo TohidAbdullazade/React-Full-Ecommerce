@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Register } from "../../../services/auth";
+import { GET_ALL_ADMINS, Register } from "../../../services/auth";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, Input, Typography } from "antd";
+import { Button, Form, Input, Typography, message } from "antd";
 
 const CreateAdmin = () => {
   const [user, setUser] = useState({
@@ -12,21 +12,26 @@ const CreateAdmin = () => {
   });
   const navigate = useNavigate();
 
+  
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = () => {
-    Register(user).then(({ data }) => {
-      localStorage.setItem("adminRole", data.user.role);
-      localStorage.setItem("adminSurname", data.user.surname);
-      localStorage.setItem("adminName", data.user.name);
-      localStorage.setItem("adminEmail", data.user.email);
-      setUser(data);
-      navigate("/admin-reister");
+  const handleSubmit = () => {
+    GET_ALL_ADMINS().then(({ data }) => {
+      if (data[0].role === "admin") {
+        message.error("This Operation is only valid for superAdmin", 1.5);
+        return;
+      } else {
+        Register(user).then(({ data }) => {
+          setUser(data);
+          localStorage.setItem("adminRole", data.user.role);
+          console.log(data);
+          navigate("/admin/members"); // NAVIGATE
+        });
+      }
     });
   };
- 
 
   return (
     <>

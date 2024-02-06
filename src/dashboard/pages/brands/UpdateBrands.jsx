@@ -1,53 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { UPDATE_BRANDS } from "../../../services/Brands";
-import { useNavigate } from "react-router-dom";
+import { GET_ALL_BRANDS, UPDATE_BRANDS } from "../../../services/Brands";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Input, Space, Typography, Upload } from "antd";
 
 const UpdateBrands = () => {
-  const [brand, setBrand] = useState({ name: "", image: "", id: 0 });
+  const [brand, setBrand] = useState({ name: "", image: "" });
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const GET_DATA_FROM_STORAGE = () => {
     setBrand({
-      name: localStorage.getItem("brandName" || null),
-      image: localStorage.getItem("brandImage" || ""),
+      name: localStorage.getItem("brandName"),
+      image: localStorage.getItem("brandImage"),
       id: localStorage.getItem("brandId"),
+    });
+    GET_ALL_BRANDS().then(({ data }) => {
+      console.log(data);
     });
   };
   useEffect(() => {
     GET_DATA_FROM_STORAGE();
   }, []);
 
-  const handleFileChange = (fileList) => {
-    const files = fileList.file;
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      setBrand((prev) => {
-        return {
-          ...prev,
-          image: e.target.result,
-        };
-      });
-    };
-    fileReader.readAsDataURL(files);
-  };
-
-  const handleSubmit = () => {
-   
-    UPDATE_BRANDS(brand.id, {...brand})
-      .then(({ data }) => {
-        setBrand((prev) => {
-          return {
-            ...prev,
-            data,
-          };
+  const handleFileChange = (e) => {
+    e.preventDefault();
+    let files = e.target.files;
+    let newImages = [...brand.image];
+    if (files) {
+      Array.from(files).forEach((file) => {
+        let reader = new FileReader();
+        reader.addEventListener("load", (e) => {
+          newImages.push(e.target.result);
+          setBrand({ ...brand, image: newImages });
         });
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+  const handleSubmit = () => {
+    UPDATE_BRANDS(id, brand)
+      .then(({ data }) => {
+        setBrand(data);
         console.log(data);
       })
       .catch((err) => {
         console.log(err.message);
       });
-    navigate("/admin/all-brands");
+    // navigate("/admin/all-brands");
   };
 
   return (
@@ -68,20 +67,13 @@ const UpdateBrands = () => {
 
         <Form.Item>
           <Space>
-            <Upload
+            <input
+              className="w-full  border my-2.5"
+              type="file"
+              name="file"
               multiple
-              listType="picture"
-              fileList={[
-                {
-                  name: "image",
-                  uid: brand.id,
-                  url: brand.image,
-                },
-              ]}
-              customRequest={handleFileChange}
-            >
-              <Button>Upload File</Button>
-            </Upload>
+              onChange={handleFileChange}
+            />
             <Button htmlType="submit" className="my-2.5">
               Update Brand
             </Button>

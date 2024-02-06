@@ -7,11 +7,8 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { Typography } from "antd";
 import { Link } from "react-router-dom";
-import { BasketContext } from "../../context/BasketContext";
 
 const Header = () => {
-  const { basket } = useContext(BasketContext);
-
   return (
     <>
       <header className="full-header h-20 bg-gray-100 flex   justify-between items-center px-10 sm:[flex p-0 m-0 bg-red-500] ">
@@ -76,7 +73,7 @@ const Header = () => {
               <li className="relative">
                 <AiOutlineShoppingCart fill="green" />
                 <span className="absolute -top-4 -right-3 w-5 h-5 flex justify-center items-center rounded-full bg-red-500 text-white">
-                  {basket.productCount}
+                  0
                 </span>
               </li>
             </Link>

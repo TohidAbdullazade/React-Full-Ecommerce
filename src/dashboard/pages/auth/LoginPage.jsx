@@ -1,33 +1,52 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { Login } from "../../../services/auth";
-import { useNavigate } from "react-router-dom";
-import { Button, Form, Input, Typography } from "antd";
-import Topbar from "../../components/Topbar";
-
+import { Navigate, useNavigate } from "react-router-dom";
+import { Button, Form, Input, Typography, message } from "antd";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function LoginPage() {
   const [loginData, setData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
+  const {
+    isSuperAdminLoggedIn,
+    setSuperAdminLoggedIn,
+    isAdminLoggedIn,
+    setAdminLoggedIn,
+  } = useContext(AuthContext);
 
   const handleChange = (input) => {
     setData({ ...loginData, [input.target.name]: input.target.value });
-   // setData({email:"",password:""})
   };
   const handleSubmit = () => {
     Login(loginData)
       .then(({ data }) => {
+        if (data.user.role === "client") {
+          navigate("/");
+          message.error("Only for SuperAdmin and Admin!", 1.5);
+        } else if (
+          data.user.role === "admin" ||
+          data.user.role === "superadmin"
+        ) {
+          setAdminLoggedIn(true);
+          navigate("/admin");
+          message.success(`Welcome ${data.user.role} ${data.user.name}`, 1.5);
+        }
+
         localStorage.setItem("token", data.token);
-        navigate("/admin");
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response && err.response.status === 400) {
+          message.error("Invalid email or password");
+          return;
+        } else {
+          message.error("An error occurred");
+        }
       });
   };
   return (
     <>
-   
-      <div className="form-area h-screen w-screen flex my-10 mx-5 justify-center"   >
+      <div className="form-area h-screen w-screen flex my-10 mx-5 justify-center">
         <div className="form-content  bg-gray-50 p-2.5  h-96 rounded-md">
           <Typography.Title level={2} className="text-center">
             Login

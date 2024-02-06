@@ -4,7 +4,7 @@ import { GET_SINGLE_PRODUCT, UPDATE_PRODUCTS } from "../../../services/Product";
 import { Button, Progress, Spin, Typography, Input, Image } from "antd";
 
 const UpdateProduct = () => {
-  const { id } = useParams();
+  const { id, } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -22,20 +22,19 @@ const UpdateProduct = () => {
     setProducts({ ...products, [e.target.name]: e.target.value });
   };
 
-  const GET_DATA_FROM_SERVER = async () => {
-    try {
-      setLoading(true);
-      const { data } = await GET_SINGLE_PRODUCT(id);
-      console.log("Product Data:", data);
-
-      if (data.product) {
-        setProducts(data.product[0]);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("Error fetching product data:", error.message);
-    }
+  const GET_DATA_FROM_SERVER = () => {
+    setLoading(true);
+    GET_SINGLE_PRODUCT(id)
+      .then((res) => {
+       setProducts(res.data)
+       console.log(res.data)
+       setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
+
   useEffect(() => {
     GET_DATA_FROM_SERVER();
   }, []);
@@ -50,7 +49,6 @@ const UpdateProduct = () => {
         reader.addEventListener("load", (e) => {
           newImages.push(e.target.result);
           setProducts({ ...products, images: newImages });
-          console.log(newImages)
         });
         reader.readAsDataURL(file);
       });
@@ -58,10 +56,9 @@ const UpdateProduct = () => {
   };
 
   const handleSubmit = (e) => {
-console.log(products)
     UPDATE_PRODUCTS(id, products).then(({ data }) => {
-      setProducts(products , data);
-    navigate("/admin/all-products")
+      setProducts(data);
+      navigate("/admin/all-products");
     });
 
     e.preventDefault();
@@ -70,7 +67,7 @@ console.log(products)
   return (
     <>
       {loading ? (
-        <div className="w-full flex justify-center items-center h-full">
+        <div className="w-full flex justify-center items-center h-full ">
           <Spin spinning />
         </div>
       ) : (
@@ -154,17 +151,6 @@ console.log(products)
                 ))}
               </div>
             )} */}
-            {products.images.length >= 0 && (
-              <div className="flex gap-2.5">
-                {products.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img.url ? img.url : "Not Image"}
-                    width={150}
-                  />
-                ))}
-              </div>
-            )}
           </div>
         </div>
       )}

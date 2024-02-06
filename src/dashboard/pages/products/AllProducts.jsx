@@ -17,7 +17,7 @@ const AllProducts = () => {
 
   // ===> PAGENATION <===
   const [currentPage, setCurrentPage] = useState(1);
-  const postPerPage = 5;
+  const postPerPage = 10;
 
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
@@ -46,9 +46,9 @@ const AllProducts = () => {
     getData();
   }, [currentPage, postPerPage]);
 
-  const deleteProduct = (id) => {
+  const deleteProduct = (id, title) => {
     Modal.confirm({
-      title: "Are You Sure To Delete This Product ?",
+      title: `Are You Sure To Delete ${title} ?`,
       onOk: () => {
         DELETE_PRODUCTS(id)
           .then(() => {
@@ -63,14 +63,13 @@ const AllProducts = () => {
       },
     });
   };
-  
 
   return (
     <>
       <div>
         <Card>
           <Table
-            className="border text-center "
+            className="border text-center   "
             loading={load}
             columns={[
               {
@@ -114,13 +113,15 @@ const AllProducts = () => {
                 render: (_, value) => {
                   return (
                     <Space>
-                      <Link to={`/admin/update-products/${value.brandId}`}>
-                        <Button >
+                      <Link to={`/admin/update-products/${value._id}`}>
+                        <Button>
                           <CiEdit size={22} fill="green" />
                         </Button>
                       </Link>
 
-                      <Button onClick={() => deleteProduct(value._id)}>
+                      <Button
+                        onClick={() => deleteProduct(value._id, value.title)}
+                      >
                         <MdDeleteOutline size={22} fill="red" />
                       </Button>
                     </Space>

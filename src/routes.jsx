@@ -22,60 +22,63 @@ import Orders from "./dashboard/pages/products/Orders";
 import CreateAdmin from "./dashboard/pages/admin/CreateAdmin";
 import AdminMember from "./dashboard/pages/admin/AdminMember";
 import LoginPage from "./dashboard/pages/auth/LoginPage";
-import RegisterAdmin from "./dashboard/pages/auth/RegisterAdmin";
 import ErrorPage from "./dashboard/pages/ErrorPage";
-import AdminLogin from "./dashboard/pages/auth/AdminLogin";
-import PrivateAdmin from "./dashboard/components/PrivateAdmin";
+import PrivateRoute from "./dashboard/components/PrivateRoute";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 
-//import PrivateAdmin from "./dashboard/components/PrivateAdmin";
+
 
 export const MainRoutes = () => {
+  const { setAdminLoggedIn, isAdminLoggedIn } = useContext(AuthContext);
   return (
     // ===> E-COMMERCE ROUTES <===
     <Routes>
       <Route path="/" element={<EcommerceLayout />}>
-        {/* ===> E-COMMERCE Child Routes <=== */}
         <Route index={true} element={<Home />} />
-        <Route path="products" element={<ProductList />} />
+        <Route path="products/:id" element={<ProductList />} />
         <Route path="product-detail/:id" element={<ProductDetail />} />
         <Route path="basket" element={<BasketPage />} />
-        {/* ===> E-COMMERCE Child Routes <=== */}
+        <Route />
 
         {/* E-COMMERCE REGISTER PAGE */}
         <Route path="/register" element={<Register />} />
-        {/* E-COMMERCE REGISTER PAGE */}
 
         {/* ===> E-COMMERCE ERROR PAGE <=== */}
         <Route path="*" element={<NotFound />} />
-        {/* ===> E-COMMERCE ERROR PAGE <=== */}
       </Route>
 
-      {/* ===> DASHBOARD ROUTES <=== */}
-      <Route path="/admin" element={<DashboardLayout />}>
-        {/* ===> DASHBOARD CHILD ROUTES <=== */}
+      {/* ===> DASHBOARD LAYOUT  <=== */}
+      <Route
+        path="/admin"
+        element={
+          <PrivateRoute isAdminLoggedIn={isAdminLoggedIn}>
+            <DashboardLayout />
+          </PrivateRoute>
+        }
+      >
         <Route index={true} element={<Dashboard />} />
         <Route path="all-brands" element={<AllBrands />} />
         <Route path="create-brand" element={<CreateBrand />} />
-        <Route path="update-brands" element={<UpdateBrands />} />
+        <Route path="update-brands/:id" element={<UpdateBrands />} />
         <Route path="all-products" element={<AllProducts />} />
         <Route path="orders" element={<Orders />} />
         <Route path="create-products" element={<CreateProducts />} />
         <Route path="update-products/:id" element={<UpdateProduct />} />
         <Route path="create-members" element={<CreateAdmin />} />
         <Route path="members" element={<AdminMember />} />
-
-        {/* ===> DASHBOARD CHILD ROUTES <=== */}
       </Route>
 
-      {/* ===> LOGIN/REGISTER PAGES <=== */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/admin-register" element={<RegisterAdmin />} />
-      <Route path="/admin-login" element={<AdminLogin />} />
-      {/* ===> LOGIN/REGISTER PAGES <=== */}
+      {/* ===> LOGIN  SUPERADMIN  PAGE <=== */}
+      <Route
+        path="/login"
+        element={<LoginPage />}
+        setAdminLoggedIn={setAdminLoggedIn}
+      />
+
 
       {/* ===> DASHBOARD ERROR PAGE <=== */}
       <Route path="/*" element={<ErrorPage />} />
-      {/* ===> DASHBOARD ERROR PAGE <=== */}
     </Routes>
   );
 };

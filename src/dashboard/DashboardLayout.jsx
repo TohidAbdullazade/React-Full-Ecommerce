@@ -5,7 +5,7 @@ import SideMenu from "./components/SideMenu";
 
 const DashboardLayout = () => {
   return (
-    <div className="full-dashboard-layout ">
+    <div className="full-dashboard-layout  ">
       <Topbar />
       <div className="full-content flex ">
         <SideMenu />

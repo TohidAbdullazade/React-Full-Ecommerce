@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DELETE_BRANDS, GET_ALL_BRANDS } from "../../../services/Brands";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Button, Image, Modal, Space, Table, message } from "antd";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline } from "react-icons/md";
@@ -16,10 +16,9 @@ const AllBrands = () => {
   const getDatas = () => {
     setLoading(true);
     GET_ALL_BRANDS()
-      .then((res) => {
-        setData(res.data);
+      .then(({ data }) => {
+        setData(data);
         setLoading(false);
-        console.log(res.data);
 
         // const items = res.data.map((product) => {
         //   return product.image ? product.image.url : null;
@@ -35,9 +34,9 @@ const AllBrands = () => {
   }, []);
 
   // ===> DELETE BRANDS <===
-  const deleteItem = (id) => {
+  const deleteItem = (id, title) => {
     Modal.confirm({
-      title: "Are you Sure To Delete This Product ?",
+      title: `Are You Sure To Delete ${title} ?`,
 
       onOk: () => {
         DELETE_BRANDS(id)
@@ -56,7 +55,7 @@ const AllBrands = () => {
   const SET_TO_STORAGE = (id, name, imgUrl) => {
     localStorage.setItem("brandName", name);
     localStorage.setItem("brandId", id);
-    localStorage.setItem("brandImage", imgUrl || "");
+    localStorage.setItem("brandImage", imgUrl);
 
     navigate("/admin/update-brands");
   };
@@ -94,18 +93,16 @@ const AllBrands = () => {
               render: (_, value) => {
                 return (
                   <Space>
-                    <Button
-                      onClick={() =>
-                        SET_TO_STORAGE(
-                          value._id,
-                          value.name,
-                          value.image.url || ""
-                        )
-                      }
-                    >
-                      <CiEdit size={22} color="green" />
-                    </Button>
-                    <Button onClick={() => deleteItem(value._id)}>
+                    <Link to={`/admin/update-brands/${value._id}`}>
+                      <Button
+                        onClick={() =>
+                          SET_TO_STORAGE(value._id, value.name, value.image.url)
+                        }
+                      >
+                        <CiEdit size={22} color="green" />
+                      </Button>
+                    </Link>
+                    <Button onClick={() => deleteItem(value._id, value.name)}>
                       <MdDeleteOutline color="red" size={22} />
                     </Button>
                   </Space>

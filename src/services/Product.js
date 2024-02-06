@@ -17,7 +17,7 @@ export const GET_ALL_PRODUCTS = async (currentPage, postPerPage) => {
   return res.data;
 };
 export const GET_SINGLE_PRODUCT = async (id) => {
-  let res = await API.get(`dashboard/products?brandId=${id}`);
+  let res = await API.get(`site/products/${id}`);
   return res.data;
 };
 // ===> DELETE  PRODUCTS <===

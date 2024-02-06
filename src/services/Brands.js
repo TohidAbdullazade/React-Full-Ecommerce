@@ -11,6 +11,7 @@ export const GET_ALL_BRANDS = async () => {
   return res.data;
 };
 
+
 // ===> DELETE BRANDS <===
 export const DELETE_BRANDS = async (id) => {
   let res = await API.delete(`dashboard/brands/${id}`);

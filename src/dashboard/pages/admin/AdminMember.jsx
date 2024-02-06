@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GET_ALL_ADMINS, deleteAdmin } from "../../../services/auth";
 import { Button, Modal, Table, message } from "antd";
 import Topbar from "../../components/Topbar";
+import { AuthContext } from "../../../context/AuthContext";
 
 const AdminMember = () => {
   const [admin, setAdmin] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { roles } = useContext(AuthContext);
 
   const get_ADMINS = () => {
     setLoading(true);
@@ -18,20 +20,29 @@ const AdminMember = () => {
     get_ADMINS();
   }, []);
 
-  const deleteUser = (id) => {
+  const deleteUser = (id, name) => {
     Modal.confirm({
+      title: `Are you Sure To Delete ${name} ?`,
+
       onOk: () => {
-        deleteAdmin(id)
-          .then(() => {
-            get_ADMINS();
-            return message.info("Was Deleted Succesfly");
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
+        GET_ALL_ADMINS().then(({ data }) => {
+          if (data[0].role === "admin") {
+            message.error("This Operation is only valid for superAdmin", 1.5);
+            return;
+          } else {
+            deleteAdmin(id)
+              .then(() => {
+                get_ADMINS();
+                return message.info("Was Deleted Succesfly");
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+          }
+        });
       },
       onCancel: () => {
-        return message.info("The Operation was canceled from SuperAdmin");
+        return message.info("The Operation was canceled !");
       },
     });
   };
@@ -47,11 +58,13 @@ const AdminMember = () => {
               { title: "Name", dataIndex: "name" },
               { title: "Surname", dataIndex: "surname" },
               { title: "Email", dataIndex: "email" },
-              { title: "Password", dataIndex: "password" },
+
               {
                 title: "Actions",
                 render: (_, value) => (
-                  <Button onClick={() => deleteUser(value._id)}>Delete</Button>
+                  <Button onClick={() => deleteUser(value._id, value.name)}>
+                    Delete
+                  </Button>
                 ),
               },
             ]}

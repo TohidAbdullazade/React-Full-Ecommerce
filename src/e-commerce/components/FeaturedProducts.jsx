@@ -7,7 +7,6 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SET_PRODUCT_TO_BASKET } from "../../services/Basket";
 import { BasketContext } from "../../context/BasketContext";
 
 const FeaturedProducts = ({ data, setData }) => {
@@ -99,7 +98,7 @@ const FeaturedProducts = ({ data, setData }) => {
             {data.map((item) => (
               <Space key={item._id}>
                 <Card
-                  style={{ minHeight: 550 }}
+                  style={{ minHeight: 200, minWidth: 250 }}
                   loading={load}
                   actions={[
                     <>
@@ -122,12 +121,8 @@ const FeaturedProducts = ({ data, setData }) => {
                   ]}
                   hoverable
                   className="w-full px-2.5 my-5"
-                  title="Product"
-                  cover={item.images.map((img) => (
-                    <Space key={img.public_id}>
-                      <Image src={img.url} width={230} height={230} />
-                    </Space>
-                  ))}
+                  title={item.title}
+                  cover={<Image height={150} src={item.images[0].url} />}
                 >
                   <div style={{ minHeight: 120 }}>
                     <p
