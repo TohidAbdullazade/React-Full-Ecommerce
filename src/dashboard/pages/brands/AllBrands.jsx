@@ -9,7 +9,6 @@ import { MdOutlineImageNotSupported } from "react-icons/md";
 const AllBrands = () => {
   const [data, setData] = useState([]); // STATE
   const [loading, setLoading] = useState(false); // STATE
-  //const [img, setImg] = useState([]); // STATE
   const navigate = useNavigate(); // NAVIGATION
 
   // ===> FETCH ALL BRANDS FROM SERVER <===
@@ -19,11 +18,6 @@ const AllBrands = () => {
       .then(({ data }) => {
         setData(data);
         setLoading(false);
-
-        // const items = res.data.map((product) => {
-        //   return product.image ? product.image.url : null;
-        // });
-        // setImg(items);
       })
       .catch((err) => {
         console.log(err.message);
@@ -33,10 +27,19 @@ const AllBrands = () => {
     getDatas();
   }, []);
 
+  // useEffect(() => {
+  //   let name = localStorage.getItem("brandName");
+  //   console.log(name);
+  // }, []);
+
   // ===> DELETE BRANDS <===
   const deleteItem = (id, title) => {
     Modal.confirm({
       title: `Are You Sure To Delete ${title} ?`,
+      okButtonProps: { className: "bg-green-500 border-0" },
+      okText: "Yes",
+      cancelText: "No",
+      cancelButtonProps: { className: "bg-red-500 border-0 text-white" },
 
       onOk: () => {
         DELETE_BRANDS(id)
@@ -56,9 +59,9 @@ const AllBrands = () => {
     localStorage.setItem("brandName", name);
     localStorage.setItem("brandId", id);
     localStorage.setItem("brandImage", imgUrl);
-
     navigate("/admin/update-brands");
   };
+
   return (
     <>
       <div className="brand-container px-10 my-5">
@@ -96,7 +99,11 @@ const AllBrands = () => {
                     <Link to={`/admin/update-brands/${value._id}`}>
                       <Button
                         onClick={() =>
-                          SET_TO_STORAGE(value._id, value.name, value.image.url)
+                          SET_TO_STORAGE(
+                            value?._id,
+                            value?.name,
+                            value?.image.url
+                          )
                         }
                       >
                         <CiEdit size={22} color="green" />

@@ -39,6 +39,7 @@ const Dashboard = () => {
   );
 };
 
+// ===> CARDLIST COMPONENT <===
 const CardList = ({ title, inc, dec, icon, message }) => {
   return (
     <>

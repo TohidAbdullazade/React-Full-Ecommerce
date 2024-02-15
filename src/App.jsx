@@ -1,6 +1,7 @@
+import "./style.css";
 import React from "react";
 import { MainRoutes } from "./routes";
-import "./style.css";
+
 
 const App = () => {
   return (

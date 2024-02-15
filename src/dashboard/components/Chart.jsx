@@ -1,5 +1,5 @@
-import { Card, Progress, Spin } from "antd";
-import React, { useEffect, useState, memo } from "react";
+import { Card,  Spin } from "antd";
+import React, { useEffect, useState } from "react";
 import {
   CartesianGrid,
   Tooltip,
@@ -13,13 +13,15 @@ import {
 import { data } from "./ChartData";
 
 const Chart = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // STATE
 
-  useEffect(() => {
+  // ===> MAKE AN TIMEOUT PROSES <===
+   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
+
   return (
     <div className="chart-container">
       {loading ? (
@@ -32,6 +34,7 @@ const Chart = () => {
             title="Sales"
             style={{ textAlign: "center" }}
           >
+            
             <ResponsiveContainer width={"100%"} height={"100%"} aspect={4 / 1}>
               <LineChart data={data}>
                 <XAxis dataKey={"name"} />
@@ -50,4 +53,4 @@ const Chart = () => {
   );
 };
 
-export default memo(Chart);
+export default Chart;

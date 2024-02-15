@@ -8,31 +8,23 @@ import { MdDeleteOutline } from "react-icons/md";
 import { Button, Card, Image, Modal, Space, Table, message } from "antd";
 
 const AllProducts = () => {
-  const [data, setData] = useState([]);
-  const [customTotalCount, setCustomTotalCount] = useState(0);
-  const [load, setLoad] = useState(false);
-  const [img, setImg] = useState([]);
-
-  const navigate = useNavigate();
+  const [data, setData] = useState([]); // STATE
+  const [customTotalCount, setCustomTotalCount] = useState(0); // PAGES
+  const [load, setLoad] = useState(false); // STATE
 
   // ===> PAGENATION <===
   const [currentPage, setCurrentPage] = useState(1);
   const postPerPage = 10;
-
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
   data.slice(firstPostIndex, lastPostIndex);
 
+  // ===> FETCH DATA FROM SERVER <===
   const getData = () => {
     setLoad(true);
     GET_ALL_PRODUCTS(currentPage, postPerPage)
       .then(({ data }) => {
         setData(data.product);
-
-        const imgUrl = data.product.map((item) => {
-          return item.images;
-        });
-        setImg(imgUrl);
 
         setCustomTotalCount(data.totalCount);
         setLoad(false);
@@ -46,9 +38,14 @@ const AllProducts = () => {
     getData();
   }, [currentPage, postPerPage]);
 
+  // ===> DELETE DATA FROM SERVER AND UI <===
   const deleteProduct = (id, title) => {
     Modal.confirm({
       title: `Are You Sure To Delete ${title} ?`,
+      okButtonProps: { className: "bg-green-500 border-0" },
+      okText: "Yes",
+      cancelText: "No",
+      cancelButtonProps: { className: "bg-red-500 border-0 text-white" },
       onOk: () => {
         DELETE_PRODUCTS(id)
           .then(() => {
@@ -132,6 +129,7 @@ const AllProducts = () => {
             dataSource={data.map((item) => ({ ...item, key: item._id }))}
             pagination={false}
           ></Table>
+          {/* ===> CUTOM PAGENATION <=== */}
           <CustomPagenation
             totalPost={customTotalCount}
             postPerPage={postPerPage}

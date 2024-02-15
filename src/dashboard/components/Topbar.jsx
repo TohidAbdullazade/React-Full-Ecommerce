@@ -1,15 +1,42 @@
-import React, { memo } from "react";
+import React, { useContext } from "react";
 import { SiPhpmyadmin } from "react-icons/si";
-import { Avatar, Popover, Typography } from "antd";
+import { Avatar, Modal, Popover, Typography } from "antd";
 import { FaRegBell } from "react-icons/fa";
 import { CiBoxList } from "react-icons/ci";
 import { TiMessages } from "react-icons/ti";
 import AdminProfile from "../../assets/img/admin-profile.webp";
 import { CiLogout } from "react-icons/ci";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
+import { AuthContext } from "../../context/AuthContext";
 
 const Topbar = () => {
+  const navigate = useNavigate(); // NAVIGATE
+  const location = useLocation(); // LOCATION
+  const currentPath = location.pathname; // PATH
+  const { setAdminLoggedIn } = useContext(AuthContext); // AUTH CONTEXT
+ 
+  // ===> MAKE THE ADMIN LOGOUT <===
+  const setAdminToLogout = () => {
+    Modal.confirm({
+      title:
+        "If you log out, you will be redirected to the Lamastore E-commerce page",
+      okText: "Yes",
+      cancelText: "No",
+      okButtonProps: { className: "bg-green-500 text-white" },
+      cancelButtonProps: { className: "bg-red-600 text-white " },
+    
+      onOk: () => {
+        navigate("/");
+        setAdminLoggedIn(false);
+        localStorage.setItem("isAdminLoggedIn", false);
+      },
+      okCancel: () => {
+        navigate(currentPath);
+      },
+    });
+  };
+
   return (
     <>
       <div className="full-header flex justify-between items-center px-10 h-[80px] bg-slate-200 ">
@@ -59,11 +86,9 @@ const Topbar = () => {
                 </Popover>
               </li>
               <li>
-                <Link to={"/login"}>
-                  <Popover content="Log Out" trigger={"hover"}>
-                    <CiLogout size={22} fill="black" />
-                  </Popover>
-                </Link>
+                <Popover content="Log Out" trigger={"hover"}>
+                  <CiLogout size={22} fill="black" onClick={setAdminToLogout} />
+                </Popover>
               </li>
             </ul>
           </div>
@@ -73,4 +98,4 @@ const Topbar = () => {
   );
 };
 
-export default memo(Topbar);
+export default Topbar;

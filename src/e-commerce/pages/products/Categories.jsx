@@ -5,17 +5,19 @@ import Footer from "../../components/Footer";
 import { Card, List, Space } from "antd";
 import { BiMessageDetail } from "react-icons/bi";
 import { MdAddShoppingCart } from "react-icons/md";
+import Header from "../../components/Header";
 
-const ProductList = () => {
-  const [data, setData] = useState([]);
+const Categories = () => {
+  const [data, setData] = useState([]); // STATE
+  
   // ===> PAGENATION <===
   const [currentPage, setCurrentPage] = useState(1);
   const postPerPage = 10;
-
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
   data.slice(firstPostIndex, lastPostIndex);
 
+// ===> GET ALL PRODUCTS FOR SITE <===
   const getProducts = () => {
     GET_ALL_PRODUCTS_FROM_SITE()
       .then(({ data }) => {
@@ -31,6 +33,7 @@ const ProductList = () => {
 
   return (
     <>
+    <Header/>
       <div className="flex gap-5">
         <div className="">
           <List
@@ -52,7 +55,7 @@ const ProductList = () => {
                     ]}
                   >
                     <p>{items.description}</p>
-                    <img src={items.images.url} alt={items.images.public_id} />
+                    <img src={items.images.url}  />
                   </Card>
                 </Space>
               );
@@ -61,15 +64,15 @@ const ProductList = () => {
         </div>
       </div>
 
-       <CustomPagenation
+      <CustomPagenation
         totalPost={data.length}
         postPerPage={postPerPage}
         setCurrentPage={setCurrentPage}
-      /> 
+      />
 
       <Footer />
     </>
   );
 };
 
-export default ProductList;
+export default Categories;

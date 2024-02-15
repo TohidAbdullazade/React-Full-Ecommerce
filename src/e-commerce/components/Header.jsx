@@ -1,37 +1,60 @@
-import React, { useState, memo, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LiaFlagUsaSolid } from "react-icons/lia";
-import { IoSearchOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
 import { MdFavoriteBorder } from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { useBasket } from "../../context/BasketContext";
 
 const Header = () => {
+  const { basket,setBasket } = useBasket(); // BASKET CONTEXT
+
+  //  ===> CHECK THE LAST COUNT FROM STORAGE AND SHOW IT ON THE HEADER <===
+   useEffect(() => {
+    if (localStorage.getItem("basket")) {
+      let basket = localStorage.getItem("basket");
+      let parsedBasket = JSON.parse(basket);
+      setBasket(parsedBasket);
+    }
+     else {
+      let basket = [];
+      setBasket(basket);
+    }
+  }, []);
+
   return (
     <>
-      <header className="full-header h-20 bg-gray-100 flex   justify-between items-center px-10 sm:[flex p-0 m-0 bg-red-500] ">
+      <header className="full-header h-20 bg-gray-100 flex   justify-between items-center px-10  ">
         <div className="nav-links flex gap-8 cursor-pointer   ">
           <span className="flex relative ">
             <LiaFlagUsaSolid size={25} className="relative" />
             <IoIosArrowDown className="absolute top-2 -right-4" />
           </span>
-          <ul className="flex gap-8 ">
+          <ul className="flex gap-8 text-gray-400 ">
             <li className="relative">
               USD
               <IoIosArrowDown className="absolute top-2 -right-4" />
             </li>
-            <Link to={"/products/1"}>
+            <NavLink
+              to={"/products/1"}
+              className={({ isActive }) => (isActive ? "text-red-500" : "")}
+            >
               <li>Men</li>
-            </Link>
-            <Link to={"/products/2"}>
+            </NavLink>
+            <NavLink
+              to={"/products/2"}
+              className={({ isActive }) => (isActive ? "text-red-500" : "")}
+            >
               <li>Women</li>
-            </Link>
-            <Link to={"/products/3"}>
+            </NavLink>
+            <NavLink
+              to={"/products/3"}
+              className={({ isActive }) => (isActive ? "text-red-500" : "")}
+            >
               <li>Children</li>
-            </Link>
-            <li>Accessories</li>
+            </NavLink>
           </ul>
         </div>
 
@@ -51,14 +74,27 @@ const Header = () => {
         </div>
 
         <div className="second-navlinks">
-          <ul className="flex items-center gap-5 cursor-pointer">
-            <li>Home</li>
-            <li>About</li>
-            <li>Contact</li>
-            <li>Store</li>
-            <li>
-              <IoSearchOutline />
-            </li>
+          <ul className="flex items-center gap-5 cursor-pointer text-gray-400">
+            <NavLink
+              to={"/"}
+              className={({ isActive }) => (isActive ? "text-red-500" : "")}
+            >
+              <li>Home</li>
+            </NavLink>
+
+            <NavLink
+              to={"/about"}
+              className={({ isActive }) => (isActive ? "text-red-500 " : "")}
+            >
+              <li>About</li>
+            </NavLink>
+            <NavLink
+              to={"/contact"}
+              className={({ isActive }) => (isActive ? "text-red-500 " : "")}
+            >
+              <li>Contact</li>
+            </NavLink>
+           
             <Link to={"/register"}>
               <li>
                 <FaRegUser fill="blue" />
@@ -73,7 +109,7 @@ const Header = () => {
               <li className="relative">
                 <AiOutlineShoppingCart fill="green" />
                 <span className="absolute -top-4 -right-3 w-5 h-5 flex justify-center items-center rounded-full bg-red-500 text-white">
-                  0
+                  {basket.length}
                 </span>
               </li>
             </Link>
@@ -84,4 +120,4 @@ const Header = () => {
   );
 };
 
-export default memo(Header);
+export default Header;

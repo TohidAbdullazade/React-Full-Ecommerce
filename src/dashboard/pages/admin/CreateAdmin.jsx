@@ -1,37 +1,63 @@
 import React, { useContext, useEffect, useState } from "react";
-import { GET_ALL_ADMINS, Register } from "../../../services/auth";
+import { Register, getProfile } from "../../../services/auth";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Input, Typography, message } from "antd";
 
-
 const CreateAdmin = () => {
-  
-
-  const navigate = useNavigate();
-  const [user, setUser] = useState({
-    name: "",
+  const navigate = useNavigate(); // NAVIGATE
+  const [user, setUser] = useState({  // STATE
+    name: "", 
     surname: "",
     email: "",
     password: "",
   });
-
+  // ===> HANDLE ONCHANGE EVENT <===
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
+  // ===> LOGIN OLAN USER YOXLMAQ ÜÇÜNDÜR || DATA REFRESH OLANDAN SONRA GƏLİR <===
+
+  // const loggedAdmin = () => {
+  //   getProfile()
+  //     .then(({ data }) => {
+  //       console.log(data.user);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message);
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   loggedAdmin();
+  // }, []);
+
+  //  ===> CREATE ADMIN MEMBERS <===
   const handleSubmit = () => {
-    Register(user).then(({ data }) => {
-      setUser(data);
-      localStorage.setItem("adminRole", data.user.role);
-      console.log(data);
-      navigate("/admin/members"); // NAVIGATE
-    });
+    Register(user)
+      .then(({ data }) => {
+        setUser(data);
+        console.log(data);
+        navigate("/admin/members"); // NAVIGATE
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          message.error(
+            "This email is available, change the email to complete the request!",
+            3
+          );
+          return;
+        }
+        if (error.response.status === 404) {
+          message.info("Server Error !");
+        }
+      });
   };
 
   return (
     <>
       <div className="register-area h-screen w-screen flex my-10 mx-5 ">
-        <div className="register-content  border bg-gray-50 p-2.5  rounded-md">
+        <div className="register-content  border bg-gray-50 p-2.5 ">
           <Typography.Title level={2} className="text-center">
             Create Admin
           </Typography.Title>

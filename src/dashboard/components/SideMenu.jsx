@@ -1,15 +1,15 @@
 import { Menu } from "antd";
-import React, { memo } from "react";
+import React from "react";
 import { RxDashboard } from "react-icons/rx";
 import { GrUserSettings } from "react-icons/gr";
-import { FiLogIn } from "react-icons/fi";
 import { TbShoppingBagPlus } from "react-icons/tb";
 import { FaShopify } from "react-icons/fa";
 import { TbBrandSlack } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
 const SideMenu = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // NAVIGATE
+  
   return (
     <>
       <div className="sideMenu_container flex-1">
@@ -28,13 +28,12 @@ const SideMenu = () => {
             },
             {
               label: "Users",
-              title: "Dashboard",
+              title: "Users",
               icon: <GrUserSettings color="green" size={17} />,
               children: [
                 {
                   label: "Create Admin",
                   key: "create-members",
-                  
                 },
                 {
                   label: "All Members",
@@ -61,10 +60,6 @@ const SideMenu = () => {
                   label: "Create Products",
                   key: "create-products",
                 },
-                // {
-                //   label: "Update Products",
-                //   key: "/admin/update-products",
-                // },
               ],
             },
             {
@@ -80,16 +75,7 @@ const SideMenu = () => {
                   label: "Create Brands",
                   key: "create-brand",
                 },
-                // {
-                //   label: "Update Brands",
-                //   key: "/admin/update-brands",
-                // },
               ],
-            },
-            {
-              label: "Login",
-              key: "/login",
-              icon: <FiLogIn size={17} />,
             },
           ]}
         ></Menu>
@@ -98,4 +84,4 @@ const SideMenu = () => {
   );
 };
 
-export default memo(SideMenu);
+export default SideMenu;

@@ -1,9 +1,10 @@
-import React, { useState, memo } from "react";
+import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const SlideShow = () => {
+ // ===> DATAS FROM REACT SLICKY <===
   const settings = {
     dots: true,
     infinite: true,
@@ -15,12 +16,13 @@ const SlideShow = () => {
     cssEase: "linear",
     pauseOnHover: true,
   };
-
+// ===> POSTED IMAGES FOR THE SLIDESHOW <===
   const data = [
     "https://images.pexels.com/photos/1549200/pexels-photo-1549200.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "https://images.pexels.com/photos/949670/pexels-photo-949670.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "https://images.pexels.com/photos/837140/pexels-photo-837140.jpeg?auto=compress&cs=tinysrgb&w=1600",
   ];
+  // ===> DESCTURCT THE IMAGES FROM DATA ARRAY <===
   const [brand_1, brand_2, brand_3] = data;
 
   return (
@@ -76,4 +78,4 @@ const SlideShow = () => {
   );
 };
 
-export default memo(SlideShow);
+export default SlideShow;

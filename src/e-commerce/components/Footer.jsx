@@ -37,19 +37,13 @@ const Footer = () => {
                 About
               </Typography.Title>
               <p className="text-gray-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi,
-                dolor alias odit architecto similique dolorum eligendi! Ex non
-                ipsam id eum aperiam quod quibusdam. Fugiat ipsa ullam voluptas
-                dolorum. Quaerat?
+              Welcome! We're here for you. Dedicated to providing top-notch service, our experienced team works hard to meet your needs. With innovative solutions and personalized customer care, we're committed to serving you!
               </p>
             </div>
             <div className="right-side-main ">
               <Typography.Title level={4}>Contact</Typography.Title>
               <p className="text-gray-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi,
-                dolor alias odit architecto similique dolorum eligendi! Ex non
-                ipsam id eum aperiam quod quibusdam. Fugiat ipsa ullam voluptas
-                dolorum. Quaerat?
+              Questions? Feedback? Get in touch! Our team is here to assist you with any inquiries or concerns you may have. Feel free to reach out to us via email or phone, and we'll get back to you as soon as possible. We look forward to hearing from you!
               </p>
             </div>
           </div>

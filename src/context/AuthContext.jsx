@@ -1,12 +1,10 @@
 import { createContext, useState } from "react";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(); // CONTEXT OBJECT
 
 export const AuthProvider = ({ children }) => {
-  const [isAdminLoggedIn, setAdminLoggedIn] = useState(false);
-  const [isSuperAdminLoggedIn, setSuperAdminLoggedIn] = useState(false);
-
- 
+  const [isAdminLoggedIn, setAdminLoggedIn] = useState(false); // STATE
+  const [isSuperAdminLoggedIn, setSuperAdminLoggedIn] = useState(false); // STATE
 
   return (
     <AuthContext.Provider
@@ -15,7 +13,6 @@ export const AuthProvider = ({ children }) => {
         setAdminLoggedIn,
         isSuperAdminLoggedIn,
         setSuperAdminLoggedIn,
-       
       }}
     >
       {children}

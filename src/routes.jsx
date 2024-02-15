@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 // =================> E-COMMERCE ROUTING <===================//
 import EcommerceLayout from "./e-commerce/EcommerceLayout";
 import Home from "./e-commerce/pages/Home";
-import ProductList from "./e-commerce/pages/products/ProductList";
+import Categories from "./e-commerce/pages/products/Categories";
 import ProductDetail from "./e-commerce/pages/products/ProductDetail";
 import BasketPage from "./e-commerce/pages/products/BasketPage";
 import Register from "./e-commerce/pages/auth/Register";
@@ -24,25 +24,22 @@ import AdminMember from "./dashboard/pages/admin/AdminMember";
 import LoginPage from "./dashboard/pages/auth/LoginPage";
 import ErrorPage from "./dashboard/pages/ErrorPage";
 import PrivateRoute from "./dashboard/components/PrivateRoute";
-import { useContext } from "react";
-import { AuthContext } from "./context/AuthContext";
-
-
+import Contact from "./e-commerce/pages/Contact";
+import About from "./e-commerce/pages/About";
 
 export const MainRoutes = () => {
-  const { setAdminLoggedIn, isAdminLoggedIn } = useContext(AuthContext);
   return (
     // ===> E-COMMERCE ROUTES <===
     <Routes>
       <Route path="/" element={<EcommerceLayout />}>
         <Route index={true} element={<Home />} />
-        <Route path="products/:id" element={<ProductList />} />
+        <Route path="products/:search" element={<Categories />} />
         <Route path="product-detail/:id" element={<ProductDetail />} />
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
         <Route path="basket" element={<BasketPage />} />
+        <Route path="register" element={<Register />} />
         <Route />
-
-        {/* E-COMMERCE REGISTER PAGE */}
-        <Route path="/register" element={<Register />} />
 
         {/* ===> E-COMMERCE ERROR PAGE <=== */}
         <Route path="*" element={<NotFound />} />
@@ -52,7 +49,7 @@ export const MainRoutes = () => {
       <Route
         path="/admin"
         element={
-          <PrivateRoute isAdminLoggedIn={isAdminLoggedIn}>
+          <PrivateRoute>
             <DashboardLayout />
           </PrivateRoute>
         }
@@ -69,16 +66,11 @@ export const MainRoutes = () => {
         <Route path="members" element={<AdminMember />} />
       </Route>
 
-      {/* ===> LOGIN  SUPERADMIN  PAGE <=== */}
-      <Route
-        path="/login"
-        element={<LoginPage />}
-        setAdminLoggedIn={setAdminLoggedIn}
-      />
-
+      {/* ===> LOGIN ADMIN || SUPERADMIN  PAGE <=== */}
+      <Route path="/login" element={<LoginPage />} />
 
       {/* ===> DASHBOARD ERROR PAGE <=== */}
-      <Route path="/*" element={<ErrorPage />} />
+      <Route path="/admin/*" element={<ErrorPage />} />
     </Routes>
   );
 };

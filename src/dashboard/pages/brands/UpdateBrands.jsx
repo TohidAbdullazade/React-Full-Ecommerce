@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { GET_ALL_BRANDS, UPDATE_BRANDS } from "../../../services/Brands";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Form, Input, Space, Typography, Upload } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  List,
+  Typography,
+} from "antd";
+import { MdFileUpload } from "react-icons/md";
 
 const UpdateBrands = () => {
-  const [brand, setBrand] = useState({ name: "", image: "" });
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const [brand, setBrand] = useState({ name: "", image: "" }); // STATE
+  const navigate = useNavigate(); // NAVIGATE
+  const { id } = useParams(); // PARAMS
 
+  // ===> GET DATAS FROM LOCALE STORAGE <===
   const GET_DATA_FROM_STORAGE = () => {
     setBrand({
       name: localStorage.getItem("brandName"),
@@ -22,35 +31,34 @@ const UpdateBrands = () => {
     GET_DATA_FROM_STORAGE();
   }, []);
 
+  // ===> CONVERT BASE 64 FILE TO IMAGE <===
   const handleFileChange = (e) => {
     e.preventDefault();
-    let files = e.target.files;
-    let newImages = [...brand.image];
+    let files = e.target.files[0];
     if (files) {
-      Array.from(files).forEach((file) => {
-        let reader = new FileReader();
-        reader.addEventListener("load", (e) => {
-          newImages.push(e.target.result);
-          setBrand({ ...brand, image: newImages });
-        });
-        reader.readAsDataURL(file);
-      });
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        setBrand({ ...brand, image: e.target.result });
+      };
+      reader.readAsDataURL(files);
     }
   };
+  // ===> MAKE A POST REQUEST TO THE SERVER AND UPDATE THE BRANDS <===
   const handleSubmit = () => {
     UPDATE_BRANDS(id, brand)
       .then(({ data }) => {
         setBrand(data);
+        localStorage.setItem("brand", JSON.stringify(data));
         console.log(data);
       })
       .catch((err) => {
         console.log(err.message);
       });
-    // navigate("/admin/all-brands");
+       navigate("/admin/all-brands");
   };
 
   return (
-    <div className="min-w-[800px] border p-10 m-10 ">
+    <div className="min-w-[800px] border p-5 m-10 ">
       <Form onFinish={handleSubmit}>
         <Typography.Title level={3} className="text-center">
           Update Brands
@@ -64,21 +72,54 @@ const UpdateBrands = () => {
             onChange={(e) => setBrand({ ...brand, name: e.target.value })}
           />
         </Form.Item>
-
         <Form.Item>
-          <Space>
+          <div className="flex flex-1  items-center">
+            <Button>
+              <div className="flex justify-center items-center gap-2.5 ">
+                <MdFileUpload size={20} fill="red" />
+                <label htmlFor="file" className="w-full cursor-pointer">
+                  File Uploader
+                </label>
+              </div>
+            </Button>
             <input
-              className="w-full  border my-2.5"
               type="file"
-              name="file"
-              multiple
+              id="file"
+              name="file-input"
+              className="opacity-0"
               onChange={handleFileChange}
             />
-            <Button htmlType="submit" className="my-2.5">
-              Update Brand
-            </Button>
-          </Space>
+            <div className="image-section flex-[4]">
+              <List
+                bordered
+                size="small"
+                dataSource={brand.image}
+                className="relative "
+              >
+                <div className={`${!brand.image ? "h-10" : ""}`} >
+                <List.Item>
+                  {brand.image && <Image width={120} src={brand.image} />}
+                </List.Item>
+                </div>
+                <Button
+                  className={`${
+                    brand.image
+                      ? "absolute top-10 right-2  "
+                      : "absolute top-1 right-1 "
+                  }`}
+                  disabled={!brand.image}
+                  onClick={() => setBrand({ image: "" })}
+                >
+                  Delete Image
+                </Button>
+              </List>
+            </div>
+          </div>
         </Form.Item>
+
+        <Button htmlType="submit" className="my-2.5 block w-full">
+          Update Brand
+        </Button>
       </Form>
     </div>
   );

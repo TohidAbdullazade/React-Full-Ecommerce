@@ -1,151 +1,182 @@
-import React, { useEffect, useState, memo, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { GET_ALL_PRODUCTS_FROM_SITE } from "../../services/Product";
-import { Button, Card, Image, Space, Spin } from "antd";
+import { Image, Popover, Spin, message } from "antd";
 import { FaRegEye } from "react-icons/fa";
-import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { MdFavoriteBorder } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BasketContext } from "../../context/BasketContext";
+import { useBasket } from "../../context/BasketContext";
+import { SET_PRODUCT_TO_BASKET } from "../../services/Basket";
 
 const FeaturedProducts = ({ data, setData }) => {
-  const [load, setLoad] = useState(false);
-  const { basket, setBasket } = useContext(BasketContext);
+  const [load, setLoad] = useState(false); // STATE
+  const { basket, isLoggedIn, setBasket } = useBasket(); // STATE
+  const navigate = useNavigate(); // NAVIGATE
 
+  // ===> FETCH ALL PRODUCTS FROM SERVER <===
   const getDataForSite = () => {
     setLoad(true);
-    GET_ALL_PRODUCTS_FROM_SITE().then(({ data }) => {
-      setData(data.product);
-      setLoad(false);
-      //  console.dir(data);
-    });
+    GET_ALL_PRODUCTS_FROM_SITE()
+      .then(({ data }) => {
+        setData(data.product);
+        setLoad(false);
+      })
+      .catch((err) => {
+        message.error(`${err.message} Please Refresh the Page`);
+        console.log(err.message);
+      });
   };
 
   useEffect(() => {
     getDataForSite();
   }, []);
 
-  const AddToCard = (id, title) => {
-    setBasket((prev) => ({
-      productId: id,
-      productCount: prev.productCount + 1,
-    }));
+  // ===> SET PRODUCTS TO BASKET <===
+  const AddToCard = (id, title, images, price) => {
+    const existingProductIndex = basket.findIndex(
+      (item) => item.productId === id
+    );
+    if (existingProductIndex !== -1) {
+      toast.info(
+        `${title} is already in your cart but the count has increased !`,
+        {
+          position: "top-center",
+          autoClose: 3000,
+          draggable: true,
+          pauseOnHover: true,
+          closeButton: true,
+          style: { writingMode: "revert", width: 500 },
+        }
+      );
+      // ===> IF THE PRODUCT IS EXIST IN YOUR CARD ONLY THE COUNT INCREASE AND SET IT TO LOCAL STORAGE  <===
+      const updatedBasket = [...basket];
+      const updatedCount = (updatedBasket[
+        existingProductIndex
+      ].productCount += 1);
+      setBasket(updatedBasket, updatedCount);
+      localStorage.setItem("basket", JSON.stringify(basket));
+    }
+    // ===> IF THE PRODUCT IS NEW THEN ADDED TO YOUR CARD <===
+    else {
+      const updatedBasket = [
+        ...basket,
+        {
+          productId: id,
+          productCount: 1,
+          productTitle: title,
+          productImages: images,
+          productPrice: price,
+        },
+      ];
 
-    console.log(basket);
-
-    // setBasket({
-    //   ...basket,
-    //   productId: id,
-    //   productCount: basket.productCount + 1,
-    // });
-
-    //  let basketInfo = {
-    //    productId: id,
-    //    productCount: basket.productCount + 1
-    //  };
-
-    // let updatedBasket = Array.from(basket).concat(basketInfo);
-    //  console.log(updatedBasket);
-
-    //  SET_PRODUCT_TO_BASKET({...basket})
-    //    .then(({ data }) => {
-    //      setBasket(data);
-    //      console.log(data);
-    //    })
-    //    .catch((err) => {
-    //      console.log(err.message);
-    //    });
-
-    const notify = () => {
-      toast.success(`${title} Was Added To Your Card`, {
-        position: "top-center",
-        closeButton: true,
-        draggable: true,
-        pauseOnHover: true,
-        autoClose: 1500,
-      });
-    };
-    notify();
+      // ===>IF THE USER IS LOGGED IN THEN POST THE PRODUCT TO THE SERVER <===
+      if (isLoggedIn) {
+        setBasket(updatedBasket);
+        SET_PRODUCT_TO_BASKET({ basket: updatedBasket })
+          .then(({ data }) => {
+            setBasket(data);
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+      // ===> ELSE POST IT TO THE LOCALE STORAGE <===
+      else {
+        setBasket(updatedBasket);
+        localStorage.setItem("basket", JSON.stringify(updatedBasket));
+        toast.success(`${title} was added to your Card!`, {
+          position: "top-center",
+          autoClose: 3000,
+          draggable: true,
+          pauseOnHover: true,
+        });
+      }
+    }
   };
 
   return (
     <>
       <ToastContainer />
-      <div className="featured_products_container my-24 mx-24">
-        <div className="top_container flex items-center justify-between my-5">
+      <div className="featured_products_container  my-24 mx-24">
+        <div className="top_container w-full flex items-center justify-between my-20 ">
           <h1
-            className="text-4xl w-full text-red-400 capitalize"
+            className="text-4xl  text-red-400 capitalize "
             style={{ fontFamily: "JetBrains Mono, monospace" }}
           >
-            Featured Products
+            Products
           </h1>
           <p
-            className="text-justify px-20 text-gray-400"
+            className="text-justify px-20 text-gray-400 ml-20 text-[15px] "
             style={{ fontFamily: "JetBrains Mono, monospace" }}
           >
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Distinctio
-            vitae quas, aliquam est odio molestias laboriosam architecto
-            similique illum, quisquam tenetur labore nulla iusto quam.
-            Dignissimos est mollitia maxime tempore?
+            Welcome to our exquisite collection of products, where every item
+            tells a story of craftsmanship, quality, and style. Immerse yourself
+            in a world of luxury and indulgence as you explore our range of
+            timeless classics and contemporary must-haves. Whether you're
+            seeking the perfect gift or treating yourself to something special,
+            our handpicked assortment is sure to inspire and delight. Discover
+            the art of living beautifully with our featured products.
           </p>
         </div>
 
         {load ? (
           <Spin spinning />
         ) : (
-          <div className="bottom-container grid grid-cols-5 gap-5">
+          <div className="bottom-container grid grid-cols-4 gap-5  ">
             {data.map((item) => (
-              <Space key={item._id}>
-                <Card
-                  style={{ minHeight: 200, minWidth: 250 }}
-                  loading={load}
-                  actions={[
-                    <>
-                      <Space>
-                        <Link to={`product-detail/${item._id}`}>
-                          <Button>
-                            <FaRegEye size={22} fill="green" />
-                          </Button>
-                        </Link>
-
-                        <Button onClick={() => AddToCard(item._id, item.title)}>
-                          <MdOutlineAddShoppingCart size={22} fill="blue" />
-                        </Button>
-
-                        <Button>
-                          <MdFavoriteBorder size={22} fill="red" />
-                        </Button>
-                      </Space>
-                    </>,
-                  ]}
-                  hoverable
-                  className="w-full px-2.5 my-5"
-                  title={item.title}
-                  cover={<Image height={150} src={item.images[0].url} />}
-                >
-                  <div style={{ minHeight: 120 }}>
-                    <p
-                      className="text-gray-400 text-sm w-full font-semibold"
-                      style={{ fontFamily: "JetBrains Mono, monospace" }}
+              <div
+                key={item._id}
+                className="bg-gray-100 rounded-2xl p-6 cursor-pointer hover:-translate-y-2 transition-all relative"
+              >
+                <div className="bg-gray-200 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-1">
+                  <MdFavoriteBorder size={22} fill="red" />
+                </div>
+                <Link to={`product-detail/${item._id}`}>
+                  <div className="bg-gray-200 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-16 right-1">
+                    <Popover
+                      placement="bottom"
+                      title="View The Product Detail"
+                      trigger={"hover"}
                     >
-                      Name: {item.title}
-                    </p>
-                    <s
-                      className="text-sm w-full text-red-500 font-semibold"
-                      style={{ fontFamily: "JetBrains Mono, monospace" }}
-                    >
-                      Price ${item.productPrice}
-                    </s>
-                    <p
-                      className="text-gray-400 text-sm w-full font-semibold"
-                      style={{ fontFamily: "JetBrains Mono, monospace" }}
-                    >
-                      SalePrice: ${item.salePrice}
-                    </p>
+                      <FaRegEye size={22} fill="green" />
+                    </Popover>
                   </div>
-                </Card>
-              </Space>
+                </Link>
+                <div className="max-lg:w-11/12 w-4/5 h-[220px] overflow-hidden mx-auto aspect-w-16 aspect-h-8">
+                  <Image
+                    src={item.images[0].url}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="text-center mt-4">
+                  <h3 className="text-lg font-bold text-gray-800">
+                    {item.title}
+                  </h3>
+                  <h4 className="text-xl text-gray-700 font-bold mt-4">
+                    ${item.salePrice}
+                    <s className="text-red-500 ml-2 font-medium">
+                      ${item.productPrice}
+                    </s>
+                  </h4>
+                  <button
+                    onClick={() =>
+                      AddToCard(
+                        item._id,
+                        item.title,
+                        item.images[0].url,
+                        item.salePrice
+                      )
+                    }
+                    type="button"
+                    className="w-full mt-6 px-4 py-3 bg-[#333] hover:bg-gray-300 hover:text-black   text-white rounded-full"
+                  >
+                    Add to cart
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -154,4 +185,4 @@ const FeaturedProducts = ({ data, setData }) => {
   );
 };
 
-export default memo(FeaturedProducts);
+export default FeaturedProducts;

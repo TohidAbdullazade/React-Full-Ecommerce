@@ -1,14 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GET_ALL_ADMINS, deleteAdmin } from "../../../services/auth";
 import { Button, Modal, Table, message } from "antd";
-import Topbar from "../../components/Topbar";
-import { AuthContext } from "../../../context/AuthContext";
 
 const AdminMember = () => {
-  const [admin, setAdmin] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const { roles } = useContext(AuthContext);
+  const [admin, setAdmin] = useState([]); // STATE
+  const [loading, setLoading] = useState(false); // STATE
 
+  // ===> GET ALL AMDINS FROM SERVER <===
   const get_ADMINS = () => {
     setLoading(true);
     GET_ALL_ADMINS().then(({ data }) => {
@@ -16,13 +14,19 @@ const AdminMember = () => {
       setLoading(false);
     });
   };
+ 
   useEffect(() => {
     get_ADMINS();
   }, []);
 
+  // ===> DELETE THE ADMIN <===
   const deleteUser = (id, name) => {
     Modal.confirm({
       title: `Are you Sure To Delete ${name} ?`,
+      okButtonProps: { className: "bg-green-500 border-0 text-white" },
+      okText: "Yes",
+      cancelText: "No",
+      cancelButtonProps: { className: "bg-red-500 border-0 text-white" },
 
       onOk: () => {
         deleteAdmin(id)
@@ -51,6 +55,7 @@ const AdminMember = () => {
               { title: "Name", dataIndex: "name" },
               { title: "Surname", dataIndex: "surname" },
               { title: "Email", dataIndex: "email" },
+              { title: "Role", dataIndex: "role" },
 
               {
                 title: "Actions",

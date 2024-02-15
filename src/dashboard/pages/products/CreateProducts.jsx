@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { CREATE_NEW_PRODUCT } from "../../../services/Product";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, Image, Input, Typography } from "antd";
+import { Button, Form, Image, Input, List, Typography, message } from "antd";
+import { MdFileUpload } from "react-icons/md";
 
 const CreateProducts = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // NAVIGATE
 
-  const [products, setProducts] = useState({
+  const [products, setProducts] = useState({ // STATE
     title: "",
     description: "",
     salePrice: 0,
@@ -17,47 +18,49 @@ const CreateProducts = () => {
     images: [],
   });
 
+// ===> HANDLE THE ONCHANGE EVENT <===
   const handleChange = (e) => {
     setProducts({ ...products, [e.target.name]: e.target.value });
   };
 
+  // ===> CONVERT BASE 64 FILE TO IMAGE <===
   const handleFileChange = (e) => {
     const files = e.target.files;
     const newImages = [...products.images];
     if (files) {
       Array.from(files).forEach((file) => {
-        let reader = new FileReader();
-        reader.addEventListener("load", (e) => {
-          newImages.push(e.target.result);
-          setProducts({ ...products, images: newImages });
-        });
-        reader.readAsDataURL(file);
+        if (newImages.length >= 4) {
+          message.error("Only 4 Images Allowed!", 2);
+          return;
+        } else {
+          let reader = new FileReader();
+          reader.addEventListener("load", (e) => {
+            newImages.push(e.target.result);
+            setProducts({ ...products, images: newImages });
+          });
+          reader.readAsDataURL(file);
+        }
       });
     }
   };
-
+  // ===> CREATE AN NEW PRODUCT <===
   const handleSubmit = () => {
     CREATE_NEW_PRODUCT(products).then(({ data }) => {
       setProducts(data);
       navigate("/admin/all-products");
     });
-    //  navigate("/admin/all-products");
   };
-  // const handleReq = (fileList) => {
-  //   const file = fileList.file;
+  // ===> DELETE THE IMAGE <===
+  const handleDeleteImage = (index) => {
+    const newImages = [...products.images];
+    newImages.splice(index, 1);
+    setProducts({ ...products, images: newImages });
+  };
 
-  //   const imgArr = [];
-  //   const reader = new FileReader();
-  //   reader.addEventListener("load", (e) => {
-  //     imgArr.push(e.target.result);
-  //     setProducts({ ...products, images: imgArr });
-  //   });
-  //   reader.readAsDataURL(file);
-  // };
   return (
     <>
-      <div className="form-area h-screen w-screen flex items-start px-10">
-        <div className="form-content  border my-5 bg-gray-50 p-2.5  rounded-md">
+      <div className="form-area  flex items-start px-10">
+        <div className="form-content min-w-[1000px] border my-5 bg-gray-50 p-2.5   rounded-md">
           <Typography.Title level={2} className="text-center">
             Create Product
           </Typography.Title>
@@ -178,20 +181,38 @@ const CreateProducts = () => {
                 Add Product
               </Button>
             </div>
-            <div>
+            <div className="file-upload-section flex flex-1 gap-52 items-center  ">
+              <Button>
+                <div className="flex justify-center items-center gap-2.5 ">
+                  <MdFileUpload size={20} fill="red" />
+                  <label htmlFor="file" className="w-full cursor-pointer">
+                    File Uploader
+                  </label>
+                </div>
+              </Button>
               <input
+                id="file"
                 type="file"
                 name="file"
                 onChange={handleFileChange}
                 multiple
-                aria-invalid="false"
+                className="opacity-0"
               />
-            </div>
-
-              <div className="flex gap-2.5 border">
-              {products.images.map((image, index) => (
-                <Image width={100} height={100} key={index} src={image} />
-              ))}
+              <div className="image-section ">
+                <List bordered dataSource={products?.images}>
+                  {products.images.map((item, index) => (
+                    <List.Item key={index}>
+                      <Image src={item} width={100} />
+                      <Button
+                        type="text"
+                        onClick={() => handleDeleteImage(index)}
+                      >
+                        Delete
+                      </Button>
+                    </List.Item>
+                  ))}
+                </List>
+              </div>
             </div>
           </Form>
         </div>
@@ -201,3 +222,44 @@ const CreateProducts = () => {
 };
 
 export default CreateProducts;
+{
+  /* <input
+                id="file"
+                type="file"
+                name="file"
+                onChange={handleFileChange}
+                multiple
+                className="opacity-0"
+              />
+              <Button>
+                <div className="flex justify-center items-center gap-2.5 ">
+                  <MdFileUpload size={20} fill="red" />
+                  <label htmlFor="file" className="w-full cursor-pointer">
+                    File Uploader
+                  </label>
+                </div>
+              </Button>
+            </div>
+            <div className="grid grid-cols-2  gap-2.5   ">
+              {products.images.map((image, index) => (
+                <span key={index}>
+                  <Image
+                    className="cursor-pointer hover:opacity-40 "
+                    width={150}
+                    height={100}
+                    key={index}
+                    src={image}
+                  />
+                  <div>
+                    <Button
+                      type="default"
+                      className="my-1"
+                      htmlType="button"
+                      onClick={() => handleDeleteImage(index)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </span>
+              ))} */
+}
